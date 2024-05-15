@@ -1,12 +1,26 @@
+import sys
+
+import pygame
+
 from cell import Cell
+from settings import Settings
 
 class GameOfLife:
     def __init__(self, n):
         self.n = n
+        self.settings = Settings()
         self._generate_grid()
         self.neighbor_coords = [(-1, -1), (-1, 0), (-1, 1),
                                 (0, -1), (0, 1),
                                 (1, -1), (1, 0), (1, 1)]
+        
+        self.init_pygame()
+        
+    def init_pygame(self):
+        pygame.init()
+        
+        self.screen = pygame.display.set_mode((self.settings.screenX, self.settings.screenY))
+        pygame.display.set_caption(self.settings.caption)
         
     def get_cell(self, x, y):
         return self.grid[y][x]
@@ -60,21 +74,36 @@ class GameOfLife:
         cell = self.grid[y][x]
         cell.set_alive() # Set cells to live next frame
         cell.next_frame() # Move cells to next frame
+        
+    def _check_events(self):
+        """Pygame events like mouse clicks and such"""
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+                    
+    def _update_screen(self):
+        """Update graphics and flip screen each frame"""
+        self.screen.fill(self.settings.bg_color)        
+            
+        pygame.display.flip()
             
     def main(self):
         """Main game loop"""
         print("The Game of Life")
-        for i in range(1, 10):
+        # Initial game state
+        self.switch_cell(1, 0)
+        self.switch_cell(2, 1)
+        self.switch_cell(0, 2)
+        self.switch_cell(1, 2)
+        self.switch_cell(2, 2)
+        while True:
             self.set_next_frame_states()
             self.update_cells()
+            
+            self._check_events()
+            self._update_screen()
             # Any user cell updates
-            if i == 1:
-                self.switch_cell(1, 0)
-                self.switch_cell(2, 1)
-                self.switch_cell(0, 2)
-                self.switch_cell(1, 2)
-                self.switch_cell(2, 2)
-            self.show_grid()
+            # self.show_grid()
         
 if __name__ == "__main__":
     test = GameOfLife(15)
