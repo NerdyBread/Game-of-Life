@@ -1,19 +1,30 @@
+import pygame
 class Cell:
-    def __init__(self, game):
+    def __init__(self, game, x, y):
         """First bit of state represents current state, second stores next frame value"""
         self.game = game # Connection to main game class
         self.state = 0b00
         self.kill_mask = 0b01
         self.alive_mask = 0b10
-        self.dead_cells = (0b00, 0b10)
-        self.living_cells = (0b01, 0b11)
+        
+        # Graphical stuff
+        self.settings = game.settings
+        self.screen = game.screen
+        self.screen_rect = game.screen.get_rect()
+        
+        self.length = game.settings.cell_length
+        self.rect = pygame.Rect(0, 0, self.length, self.length)
+        self.rect.x = self.length * x
+        self.rect.y = self.length * y
+        
         
     def is_dead(self):
-        return self.state in self.dead_cells
+        """Cell is dead this frame"""
+        return not self.state % 2
     
     def is_alive(self):
-        """Because I'm lazy"""
-        return self.state in self.living_cells
+        """Cell is alive this frame"""
+        return self.state % 2
     
     def set_dead(self):
         """Bitwise and to set next state to dead and preserve current state"""
@@ -24,11 +35,18 @@ class Cell:
         self.state |= self.alive_mask
         
     def switch(self):
+        """User updates cell state in current frame"""
         self.state = ~self.state
         
     def next_frame(self):
         """Shift next frame bit to current state bit"""
         self.state = self.state >> 1
+        
+    def draw(self):
+        if self.is_alive():
+            pygame.draw.rect(self.screen, self.settings.alive_color, self.rect)
+        else:
+            pygame.draw.rect(self.screen, self.settings.dead_color, self.rect)
         
 """def show(cell):
     print(bin(cell.state))
