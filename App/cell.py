@@ -23,6 +23,9 @@ class Cell:
         """Bitwise or to set next state to alive and preserve current state"""
         self.state |= self.alive_mask
         
+    def switch(self):
+        self.state = ~self.state
+        
     def next_frame(self):
         """Shift next frame bit to current state bit"""
         self.state = self.state >> 1

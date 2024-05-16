@@ -17,15 +17,18 @@ class GameOfLife:
         self.init_pygame()
         
     def init_pygame(self):
+        """Initial pygame settings"""
         pygame.init()
         
         self.screen = pygame.display.set_mode((self.settings.screenX, self.settings.screenY))
         pygame.display.set_caption(self.settings.caption)
         
     def get_cell(self, x, y):
+        """Return a cell object given x and y coordinates"""
         return self.grid[y][x]
     
     def _generate_grid(self):
+        """Generate a grid of cells (all initially dead)"""
         self.grid = []
         for i in range(self.n):
             new_row = []
@@ -34,6 +37,7 @@ class GameOfLife:
             self.grid.append(new_row)
     
     def _get_cell_neighbors(self, x, y) -> int:
+        """Returns number of living neighbors given a cell's x and y"""
         living_neighbors = 0
         for pair in self.neighbor_coords:
             if 0 <= (x + pair[0]) < self.n and 0 <= y+pair[1] < self.n:
@@ -63,6 +67,7 @@ class GameOfLife:
                 cell.next_frame()
                 
     def show_grid(self):
+        """Command line display of game output"""
         for row in self.grid:
             row_text = ""
             for cell in row:
@@ -72,8 +77,7 @@ class GameOfLife:
             
     def switch_cell(self, x, y):
         cell = self.grid[y][x]
-        cell.set_alive() # Set cells to live next frame
-        cell.next_frame() # Move cells to next frame
+        cell.switch()
         
     def _check_events(self):
         """Pygame events like mouse clicks and such"""
@@ -96,6 +100,11 @@ class GameOfLife:
         self.switch_cell(0, 2)
         self.switch_cell(1, 2)
         self.switch_cell(2, 2)
+        
+        self.switch_cell(4, 4)
+        self.switch_cell(4, 5)
+        self.switch_cell(5, 4)
+        self.switch_cell(5, 5)
         while True:
             self.set_next_frame_states()
             self.update_cells()
