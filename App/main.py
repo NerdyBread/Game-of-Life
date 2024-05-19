@@ -9,7 +9,7 @@ from settings import Settings
 class GameOfLife:
     def __init__(self, n):
         self.n = n
-        self.settings = Settings()
+        self.settings = Settings(n)
         self.init_pygame()
         self._generate_grid()
         self.neighbor_coords = [(-1, -1), (-1, 0), (-1, 1),
@@ -21,7 +21,7 @@ class GameOfLife:
         pygame.init()
         
         self.clock = pygame.time.Clock()
-        self.screen = pygame.display.set_mode((self.settings.screenX, self.settings.screenY))
+        self.screen = pygame.display.set_mode((self.settings.screenX, self.settings.screenY+50))
         pygame.display.set_caption(self.settings.caption)
         
     def get_cell(self, x, y):
@@ -41,7 +41,7 @@ class GameOfLife:
         """Returns number of living neighbors given a cell's x and y"""
         living_neighbors = 0
         for pair in self.neighbor_coords:
-            if 0 <= (x + pair[0]) < self.n and 0 <= y+pair[1] < self.n:
+            if 0 <= (x + pair[0]) < self.n and 0 <= (y+pair[1]) < self.n:
                 neighbor = self.grid[y+pair[1]][x+pair[0]]
                 neighbor_current_state = neighbor.is_alive()
                 living_neighbors += neighbor_current_state
@@ -91,15 +91,15 @@ class GameOfLife:
                     
     def _update_screen(self):
         """Update graphics and flip screen each frame"""
-        self.screen.fill(self.settings.bg_color)  
+        self.screen.fill(self.settings.dead_color)
         for row in self.grid:
             for cell in row:
-                cell.draw()      
+                cell.draw()
             
         pygame.display.flip()
         
         # self.clock.tick(60)
-        time.sleep(0.2)
+        time.sleep(1)
             
     def main(self):
         """Main game loop"""
@@ -115,14 +115,18 @@ class GameOfLife:
         self.switch_cell(8, 9)
         self.switch_cell(9, 8)
         self.switch_cell(7, 8)
+        self.switch_cell(14, 5)
+        self.switch_cell(14, 4)
+        self.switch_cell(13, 5)
+        self.switch_cell(13, 4)
         while True:
-            self.set_next_frame_states()
-            self.update_cells()
-            
             self._check_events()
             self._update_screen()
             self.show_grid()
+
+            self.set_next_frame_states()
+            self.update_cells()
         
 if __name__ == "__main__":
-    test = GameOfLife(15)
+    test = GameOfLife(40)
     test.main()

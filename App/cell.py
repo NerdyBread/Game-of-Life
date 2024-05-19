@@ -13,9 +13,10 @@ class Cell:
         self.screen_rect = game.screen.get_rect()
         
         self.length = game.settings.cell_length
-        self.rect = pygame.Rect(0, 0, self.length, self.length)
-        self.rect.x = self.length * x
-        self.rect.y = self.length * y
+        self.x = self.length * x
+        self.y = self.length * y
+        self.border_width = self.game.settings.border_width
+        self.border_color = (0, 0, 0)
         
         
     def is_dead(self):
@@ -44,9 +45,15 @@ class Cell:
         
     def draw(self):
         if self.is_alive():
-            pygame.draw.rect(self.screen, self.settings.alive_color, self.rect)
+            color = self.settings.alive_color
         else:
-            pygame.draw.rect(self.screen, self.settings.dead_color, self.rect)
+            color = self.settings.dead_color
+        pygame.draw.rect(self.screen, color, (self.x, self. y, self.length, self.length))
+
+        # Black border around the cell
+        pygame.draw.rect(self.screen, self.border_color, (self.x - self.border_width, self.y - self.border_width, 
+                                     self.length + 2 * self.border_width, 
+                                     self.length + 2 * self.border_width), self.border_width)
         
 """def show(cell):
     print(bin(cell.state))
