@@ -98,18 +98,17 @@ class GameOfLife:
             
         pygame.display.flip()
         
-        # self.clock.tick(60)
-        time.sleep(1)
+        pygame.time.delay(self.settings.frame_time)
             
     def main(self):
         """Main game loop"""
         print("The Game of Life")
         # Initial game state
-        self.switch_cell(0, 0)
         self.switch_cell(1, 0)
-        self.switch_cell(0, 1)
-        self.switch_cell(1, 1)
+        self.switch_cell(2, 1)
         self.switch_cell(0, 2)
+        self.switch_cell(1, 2)
+        self.switch_cell(2, 2)
         self.switch_cell(8, 7)
         self.switch_cell(8, 8)
         self.switch_cell(8, 9)
@@ -120,12 +119,13 @@ class GameOfLife:
         self.switch_cell(13, 5)
         self.switch_cell(13, 4)
         while True:
-            self._check_events()
-            self._update_screen()
-            self.show_grid()
+            if not self.settings.is_paused():
+                self._check_events()
+                self._update_screen()
+                self.show_grid()
 
-            self.set_next_frame_states()
-            self.update_cells()
+                self.set_next_frame_states()
+                self.update_cells()
         
 if __name__ == "__main__":
     test = GameOfLife(40)

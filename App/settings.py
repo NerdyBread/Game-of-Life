@@ -12,3 +12,10 @@ class Settings:
         self.dead_color = (87, 81, 81)
         self.cell_length = self.screenX / self.rows
         self.border_width = 3
+        
+        # Game settings
+        self.paused = False
+        self.frame_time = 250 # milliseconds
+        
+    def is_paused(self):
+        return self.paused
