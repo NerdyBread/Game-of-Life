@@ -85,9 +85,6 @@ class GameOfLife:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    self.new_square()
                     
     def _update_screen(self):
         """Update graphics and flip screen each frame"""
