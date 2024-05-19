@@ -15,6 +15,7 @@ class Cell:
         self.length = game.settings.cell_length
         self.x = self.length * x
         self.y = self.length * y
+        self.rect = pygame.Rect(self.x, self.y, self.length, self.length)
         self.border_width = self.game.settings.border_width
         self.border_color = (0, 0, 0)
         
@@ -48,7 +49,7 @@ class Cell:
             color = self.settings.alive_color
         else:
             color = self.settings.dead_color
-        pygame.draw.rect(self.screen, color, (self.x, self. y, self.length, self.length))
+        pygame.draw.rect(self.screen, color, self.rect)
 
         # Black border around the cell
         pygame.draw.rect(self.screen, self.border_color, (self.x - self.border_width, self.y - self.border_width, 

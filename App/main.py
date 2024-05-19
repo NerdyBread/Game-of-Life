@@ -85,6 +85,16 @@ class GameOfLife:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_play_button(mouse_pos)
+                
+    def _check_play_button(self, mouse_pos):
+        """Check if play/pause button was clicked"""
+        pass
+            
+    def _check_cell_clicked(self, mouse_pos):
+        pass
                     
     def _update_screen(self):
         """Update graphics and flip screen each frame"""
