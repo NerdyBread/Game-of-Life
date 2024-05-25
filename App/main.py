@@ -111,10 +111,24 @@ class GameOfLife:
             self.settings.paused = True
         
     def _check_cell_clicked(self, mouse_pos):
-        for row in self.grid:
-            for cell in row:
-                if cell.rect.collidepoint(mouse_pos):
-                    cell.switch()
+        """Check which cell was clicked"""
+        # Heuristic approach to narrow down cell click checking
+        print(mouse_pos)
+        mouse_x = mouse_pos[0]
+        mouse_y = mouse_pos[1]
+        # Map the mouse coordinates to an approximate cell range
+        cell_len = self.settings.cell_length
+        approx_x = int(mouse_x // cell_len)
+        print(approx_x)
+        approx_y = int(mouse_y // cell_len)
+        # These are right with a margin of error of one cell
+        for row in range(approx_y-1, approx_y+2):
+            for index in range(approx_x-1, approx_x+2):
+                if 0 <= index < self.n and 0 <= row < self.n:   
+                    cell = self.grid[row][index]
+                    if cell.rect.collidepoint(mouse_pos):
+                        cell.switch()
+                        return None # Break out of both loops
                     
     def _update_screen(self):
         """Update graphics and flip screen each frame"""
