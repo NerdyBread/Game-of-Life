@@ -14,8 +14,13 @@ class Settings:
         self.border_width = 3
         
         # Game settings
-        self.paused = False
+        self.paused = True
         self.frame_time = 250 # milliseconds
+        
+        # Button properties
+        self.button_text_color = (0, 0, 0)
+        self.play_button_color = (16, 237, 16)
+        self.pause_button_color = (16, 194, 243)
         
     def is_paused(self):
         return self.paused

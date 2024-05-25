@@ -3,6 +3,7 @@ import time
 
 import pygame
 
+from button import Button
 from cell import Cell
 from settings import Settings
 
@@ -16,11 +17,17 @@ class GameOfLife:
                                 (0, -1), (0, 1),
                                 (1, -1), (1, 0), (1, 1)]
         
+        button_text_color = self.settings.button_text_color
+        play_button_color = self.settings.play_button_color
+        pause_button_color = self.settings.pause_button_color
+        
+        self.play_button = Button(self, "Play", play_button_color, button_text_color)
+        self.pause_button = Button(self, "Pause", pause_button_color, button_text_color)
+        
     def init_pygame(self):
         """Initial pygame settings"""
         pygame.init()
         
-        self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode((self.settings.screenX, self.settings.screenY+50))
         pygame.display.set_caption(self.settings.caption)
         
@@ -87,12 +94,21 @@ class GameOfLife:
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
-                self._check_play_button(mouse_pos)
+                if self.settings.is_paused():
+                    self._check_play_button(mouse_pos)
+                else:
+                    self._check_pause_button(mouse_pos)
                 
     def _check_play_button(self, mouse_pos):
-        """Check if play/pause button was clicked"""
-        pass
-            
+        """Check if play button was clicked"""
+        if self.play_button.rect.collidepoint(mouse_pos):
+            self.settings.paused = False
+
+    def _check_pause_button(self, mouse_pos):
+        """Check if pause button was clicked"""
+        if self.pause_button.rect.collidepoint(mouse_pos):
+            self.settings.paused = True
+        
     def _check_cell_clicked(self, mouse_pos):
         pass
                     
@@ -102,10 +118,18 @@ class GameOfLife:
         for row in self.grid:
             for cell in row:
                 cell.draw()
+                
+        self._manage_buttons()
             
         pygame.display.flip()
         
         pygame.time.delay(self.settings.frame_time)
+        
+    def _manage_buttons(self):
+        if self.settings.is_paused():
+            self.play_button.draw()
+        else:
+            self.pause_button.draw()
             
     def main(self):
         """Main game loop"""
@@ -125,14 +149,18 @@ class GameOfLife:
         self.switch_cell(14, 4)
         self.switch_cell(13, 5)
         self.switch_cell(13, 4)
+        
+        self._update_screen()
+        
         while True:
+            self._check_events()
+            # Frontend
+            self._update_screen()
             if not self.settings.is_paused():
-                self._check_events()
-                self._update_screen()
-                self.show_grid()
-
+                # Backend
                 self.set_next_frame_states()
                 self.update_cells()
+                
         
 if __name__ == "__main__":
     test = GameOfLife(40)
