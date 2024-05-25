@@ -113,13 +113,11 @@ class GameOfLife:
     def _check_cell_clicked(self, mouse_pos):
         """Check which cell was clicked"""
         # Heuristic approach to narrow down cell click checking
-        print(mouse_pos)
         mouse_x = mouse_pos[0]
         mouse_y = mouse_pos[1]
         # Map the mouse coordinates to an approximate cell range
         cell_len = self.settings.cell_length
         approx_x = int(mouse_x // cell_len)
-        print(approx_x)
         approx_y = int(mouse_y // cell_len)
         # These are right with a margin of error of one cell
         for row in range(approx_y-1, approx_y+2):
@@ -151,23 +149,11 @@ class GameOfLife:
             
     def main(self):
         """Main game loop"""
-        print("The Game of Life")
         # Initial game state
-        self.switch_cell(1, 0)
-        self.switch_cell(2, 1)
-        self.switch_cell(0, 2)
-        self.switch_cell(1, 2)
-        self.switch_cell(2, 2)
-        self.switch_cell(8, 7)
-        self.switch_cell(8, 8)
-        self.switch_cell(8, 9)
-        self.switch_cell(9, 8)
-        self.switch_cell(7, 8)
-        self.switch_cell(14, 5)
-        self.switch_cell(14, 4)
-        self.switch_cell(13, 5)
-        self.switch_cell(13, 4)
-        
+        self.switch_cell(22, 22)
+        self.switch_cell(23, 22)
+        self.switch_cell(22, 23)
+        self.switch_cell(23, 23)
         self._update_screen()
         
         while True:
@@ -181,5 +167,5 @@ class GameOfLife:
                 
         
 if __name__ == "__main__":
-    test = GameOfLife(40)
+    test = GameOfLife(48)
     test.main()
