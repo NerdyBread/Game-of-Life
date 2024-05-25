@@ -98,6 +98,7 @@ class GameOfLife:
                     self._check_play_button(mouse_pos)
                 else:
                     self._check_pause_button(mouse_pos)
+                self._check_cell_clicked(mouse_pos)
                 
     def _check_play_button(self, mouse_pos):
         """Check if play button was clicked"""
@@ -110,7 +111,10 @@ class GameOfLife:
             self.settings.paused = True
         
     def _check_cell_clicked(self, mouse_pos):
-        pass
+        for row in self.grid:
+            for cell in row:
+                if cell.rect.collidepoint(mouse_pos):
+                    cell.switch()
                     
     def _update_screen(self):
         """Update graphics and flip screen each frame"""
