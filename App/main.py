@@ -1,5 +1,4 @@
 import sys
-import time
 
 import pygame
 
@@ -59,6 +58,7 @@ class GameOfLife:
         for y, row in enumerate(self.grid):
             for x, cell in enumerate(row):
                 neighbor_count = self._get_cell_neighbors(x, y)
+                # Underlying cell life/death logic
                 if cell.is_dead() and neighbor_count == 3:
                     cell.set_alive()
                 if cell.is_alive():
@@ -72,7 +72,7 @@ class GameOfLife:
         """Finish the two-pass cell update cycle"""
         for row in self.grid:
             for cell in row:
-                cell.next_frame()
+                cell.next_frame() # Shifts the next frame bit to current frame
                 
     def show_grid(self):
         """Command line display of game output"""
@@ -83,7 +83,7 @@ class GameOfLife:
             print(row_text)
         print("--------------")
             
-    def switch_cell(self, x, y):
+    def _switch_cell(self, x, y):
         cell = self.grid[y][x]
         cell.switch()
         
@@ -122,7 +122,7 @@ class GameOfLife:
         # These are right with a margin of error of one cell
         for row in range(approx_y-1, approx_y+2):
             for index in range(approx_x-1, approx_x+2):
-                if 0 <= index < self.n and 0 <= row < self.n:   
+                if 0 <= index < self.n and 0 <= row < self.n:
                     cell = self.grid[row][index]
                     if cell.rect.collidepoint(mouse_pos):
                         cell.switch()
@@ -139,8 +139,6 @@ class GameOfLife:
             
         pygame.display.flip()
         
-        pygame.time.delay(self.settings.frame_time)
-        
     def _manage_buttons(self):
         if self.settings.is_paused():
             self.play_button.draw()
@@ -150,10 +148,10 @@ class GameOfLife:
     def main(self):
         """Main game loop"""
         # Initial game state
-        self.switch_cell(22, 22)
-        self.switch_cell(23, 22)
-        self.switch_cell(22, 23)
-        self.switch_cell(23, 23)
+        self._switch_cell(22, 22)
+        self._switch_cell(23, 22)
+        self._switch_cell(22, 23)
+        self._switch_cell(23, 23)
         self._update_screen()
         
         while True:
@@ -164,6 +162,7 @@ class GameOfLife:
                 # Backend
                 self.set_next_frame_states()
                 self.update_cells()
+                pygame.time.delay(self.settings.frame_time)
                 
         
 if __name__ == "__main__":

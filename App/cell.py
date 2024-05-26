@@ -38,7 +38,11 @@ class Cell:
         
     def switch(self):
         """User updates cell state in current frame"""
-        self.state = ~self.state
+        if self.is_alive():
+            self.set_dead()
+        else:
+            self.set_alive()
+        self.next_frame()
         
     def next_frame(self):
         """Shift next frame bit to current state bit"""
@@ -54,19 +58,4 @@ class Cell:
         # Black border around the cell
         pygame.draw.rect(self.screen, self.border_color, (self.x - self.border_width, self.y - self.border_width, 
                                      self.length + 2 * self.border_width, 
-                                     self.length + 2 * self.border_width), self.border_width)
-        
-"""def show(cell):
-    print(bin(cell.state))
-
-if __name__ == "__main__":
-    dead_cell = Cell("Hello")
-    dead_cell.set_alive()
-    show(dead_cell)
-    print(dead_cell.is_alive())
-    print(dead_cell.is_dead())
-    dead_cell.next_frame()
-    show(dead_cell)
-    print(dead_cell.is_alive())
-    print(dead_cell.is_dead())"""
-    
+                                     self.length + 2 * self.border_width), self.border_width)    
