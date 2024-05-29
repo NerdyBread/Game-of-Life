@@ -42,7 +42,8 @@ class GameOfLife:
         self.pause_button = Button(self, "Pause", pause_button_color, button_text_color_dark, button_width,
                                    button_height, button_font_size, button_x, button_y)
         
-        # Create pause buttons
+        # Create other buttons
+        self.toolbar_widgets = []
         button_border = 20
         button_distance = button_width + button_border
         
@@ -53,14 +54,8 @@ class GameOfLife:
         self.clear_button = Button(self, "Clear", clear_button_color, button_text_color_light, button_width,
                                    button_height, button_font_size, button_x, button_y)
         
-        # Speed up and slow down buttons
-        button_x += button_distance
-        
-        slow_button_color = self.settings.slow_button_color
-        speed_button_color = self.settings.speed_button_color
-        
-        self.slow_down_button = Button(self, "Slow Down", slow_button_color, button_text_color_dark, button_width,
-                                       button_height, button_font_size, button_x, button_y)
+        self.toolbar_widgets.append(self.clear_button) # Room to grow
+
         
     def _get_cell(self, x, y):
         """Return a cell object given x and y coordinates"""
@@ -179,7 +174,8 @@ class GameOfLife:
             self.play_button.draw()
         else:
             self.pause_button.draw()
-        self.clear_button.draw()
+        for button in self.toolbar_widgets:
+            button.draw()
             
     def main(self):
         """Main game loop"""
