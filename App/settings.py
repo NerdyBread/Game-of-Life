@@ -15,7 +15,7 @@ class Settings:
         
         # Game settings
         self.paused = True
-        self.frame_time = 200 # milliseconds
+        self.frame_time = 100 # milliseconds
         
         # Button properties
         self.button_text_color_dark = (0, 0, 0)

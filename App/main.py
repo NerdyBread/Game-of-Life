@@ -1,6 +1,9 @@
 import sys
 
 import pygame
+import pygame_widgets
+from pygame_widgets.slider import Slider
+from pygame_widgets.textbox import TextBox
 
 from button import Button
 from cell import Cell
@@ -15,7 +18,7 @@ class GameOfLife:
         self.neighbor_coords = [(-1, -1), (-1, 0), (-1, 1),
                                 (0, -1), (0, 1),
                                 (1, -1), (1, 0), (1, 1)]
-        self._init_buttons()
+        self._init_widgets()
         
     def init_pygame(self):
         """Initial pygame settings"""
@@ -25,7 +28,7 @@ class GameOfLife:
         self.screen_rect = self.screen.get_rect()
         pygame.display.set_caption(self.settings.caption)
         
-    def _init_buttons(self):
+    def _init_widgets(self):
         """Create all buttons in bottom toolbar"""
         button_text_color_dark = self.settings.button_text_color_dark
         play_button_color = self.settings.play_button_color
@@ -42,7 +45,7 @@ class GameOfLife:
         self.pause_button = Button(self, "Pause", pause_button_color, button_text_color_dark, button_width,
                                    button_height, button_font_size, button_x, button_y)
         
-        # Create other buttons
+        # Create other tools
         self.toolbar_widgets = []
         button_border = 20
         button_distance = button_width + button_border
@@ -55,6 +58,32 @@ class GameOfLife:
                                    button_height, button_font_size, button_x, button_y)
         
         self.toolbar_widgets.append(self.clear_button) # Room to grow
+        
+        # Speed slider
+        slider_width = 100
+        slider_height = 15
+        
+        slider_x = button_x + button_distance
+        slider_y = button_y
+
+        self.speed_slider = Slider(self.screen, slider_x, slider_y, slider_width,
+                                   slider_height, min=1, max=100)
+        self.toolbar_widgets.append(self.speed_slider)
+        
+        # Label for the speed slider
+        label_width = 40
+        label_height = 25
+        label_font_size = 15
+        
+        label_x = slider_x + slider_width + button_border
+        label_y = slider_y - 5
+        
+        self.slider_label = TextBox(self.screen, label_x, label_y, label_width,
+                               label_height, fontSize = label_font_size)
+        
+        self.slider_label.disable() # Set to act as label rather than text box
+        self.toolbar_widgets.append(self.slider_label)
+        
 
         
     def _get_cell(self, x, y):
@@ -107,7 +136,8 @@ class GameOfLife:
         
     def _check_events(self):
         """Pygame events like mouse clicks and such"""
-        for event in pygame.event.get():
+        events = pygame.event.get()
+        for event in events:
             if event.type == pygame.QUIT:
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -118,6 +148,9 @@ class GameOfLife:
                     self._check_pause_button(mouse_pos)
                 self._check_clear_button(mouse_pos)
                 self._check_cell_clicked(mouse_pos)
+        
+        self.slider_label.setText(self.speed_slider.getValue())
+        pygame_widgets.update(events)
                 
     def _check_play_button(self, mouse_pos):
         """Check if play button was clicked"""
