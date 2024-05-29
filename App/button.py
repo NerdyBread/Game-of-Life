@@ -1,21 +1,17 @@
 import pygame
 
 class Button:
-    def __init__(self, game, text, color, text_color):
+    def __init__(self, game, text, color, text_color, width, height, font_size, x, y):
         self.game = game
         self.screen = game.screen
         self.screen_rect = game.screen.get_rect()
         
         # Set properties
-        self.width, self.height = 60, 20
+        self.width, self.height = width, height
+        self.x, self.y = x, y
         self.color = color
         self.text_color = text_color
-        self.font = pygame.font.SysFont(None, 20)
-        
-        self.x = (self.screen_rect.width / 2) - (self.width / 2)
-        print(self.x)
-        self.y = self.screen_rect.height - self.height - 5
-        print(self.y)
+        self.font = pygame.font.SysFont(None, font_size)
         
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         
@@ -29,3 +25,9 @@ class Button:
     def draw(self):
         self.screen.fill(self.color, self.rect)
         self.screen.blit(self.text_image, self.text_image_rect)
+        
+    def set_x(self, x):
+        self.x = x
+        
+    def set_y(self, y):
+        self.y = y
