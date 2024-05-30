@@ -227,7 +227,9 @@ class GameOfLife:
                 # Backend
                 self.set_next_frame_states()
                 self.update_cells()
-                pygame.time.delay(self.settings.frame_time)
+                # delay_time = self.settings.frame_time - self.speed_slider.getValue()
+                delay_time = self.settings.frame_time
+                pygame.time.delay(delay_time)
                 
         
 if __name__ == "__main__":
