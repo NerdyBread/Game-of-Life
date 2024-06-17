@@ -11,7 +11,7 @@ from settings import Settings
 
 class GameOfLife:
     def __init__(self, n):
-        self.n = n
+        self.n = n # Number of rows
         self.settings = Settings(n)
         self.init_pygame()
         self._generate_grid()
@@ -58,6 +58,12 @@ class GameOfLife:
                                    button_height, button_font_size, button_x, button_y)
         
         self.toolbar_widgets.append(self.clear_button) # Room to grow
+
+        button_x += button_distance
+        next_button_color = self.settings.next_button_color
+        
+        self.next_button = Button(self, "Next", next_button_color, button_text_color_light, button_width,
+                                  button_height, button_font_size, button_x, button_y)
         
         # Speed slider
         slider_width = 100
@@ -66,12 +72,13 @@ class GameOfLife:
         slider_x = button_x + button_distance
         slider_y = button_y
 
+        self.speed_slider_max = 100
         self.speed_slider = Slider(self.screen, slider_x, slider_y, slider_width,
-                                   slider_height, min=1, max=100)
+                                   slider_height, min=1, max=self.speed_slider_max)
         self.toolbar_widgets.append(self.speed_slider)
         
         # Label for the speed slider
-        label_width = 40
+        label_width = 80
         label_height = 25
         label_font_size = 15
         
@@ -92,8 +99,10 @@ class GameOfLife:
     
     def _generate_grid(self):
         """Generate a grid of cells (all initially dead)"""
+        pixels_per_cell = self.n / self.settings.screenX
+        self.columns = round(pixels_per_cell * self.settings.screenY)
         self.grid = []
-        for y in range(self.n):
+        for y in range(self.columns):
             new_row = []
             for x in range(self.n):
                 new_row.append(Cell(self, x, y))
@@ -103,7 +112,7 @@ class GameOfLife:
         """Returns number of living neighbors given a cell's x and y"""
         living_neighbors = 0
         for pair in self.neighbor_coords:
-            if 0 <= (x + pair[0]) < self.n and 0 <= (y+pair[1]) < self.n:
+            if 0 <= (x + pair[0]) < self.n and 0 <= (y+pair[1]) < self.columns:
                 neighbor = self.grid[y+pair[1]][x+pair[0]]
                 neighbor_current_state = neighbor.is_alive()
                 living_neighbors += neighbor_current_state
@@ -147,9 +156,10 @@ class GameOfLife:
                 else:
                     self._check_pause_button(mouse_pos)
                 self._check_clear_button(mouse_pos)
+                self._check_next_button(mouse_pos)
                 self._check_cell_clicked(mouse_pos)
         
-        self.slider_label.setText(self.speed_slider.getValue())
+        self.slider_label.setText(f"Speed: {self.speed_slider.getValue()}")
         pygame_widgets.update(events)
                 
     def _check_play_button(self, mouse_pos):
@@ -161,17 +171,22 @@ class GameOfLife:
         """Check if pause button was clicked"""
         if self.pause_button.rect.collidepoint(mouse_pos):
             self.settings.paused = True
+
+    def _check_next_button(self, mouse_pos):
+        if self.next_button.rect.collidepoint(mouse_pos):
+            self.set_next_frame_states()
+            self.update_cells()
             
+    def _check_clear_button(self, mouse_pos):
+        if self.clear_button.rect.collidepoint(mouse_pos):
+            self.clear_screen()
+
     def clear_screen(self):
         """Tied to clear button"""
         for row in self.grid:
             for cell in row:
                 if cell.is_alive():
                     cell.switch()
-            
-    def _check_clear_button(self, mouse_pos):
-        if self.clear_button.rect.collidepoint(mouse_pos):
-            self.clear_screen()
         
     def _check_cell_clicked(self, mouse_pos):
         """Check which cell was clicked"""
@@ -185,7 +200,7 @@ class GameOfLife:
         # These are right with a margin of error of one cell
         for row in range(approx_y-1, approx_y+2):
             for index in range(approx_x-1, approx_x+2):
-                if 0 <= index < self.n and 0 <= row < self.n:
+                if 0 <= index < self.n and 0 <= row < self.columns:
                     cell = self.grid[row][index]
                     if cell.rect.collidepoint(mouse_pos):
                         cell.switch()
@@ -219,19 +234,25 @@ class GameOfLife:
         self._switch_cell(23, 23)
         self._update_screen()
         
+        ticks = 0
+        
         while True:
+            ticks += 1
             self._check_events()
             # Frontend
             self._update_screen()
             if not self.settings.is_paused():
                 # Backend
-                self.set_next_frame_states()
-                self.update_cells()
+                frames_before_update = 1 + self.speed_slider_max - self.speed_slider.getValue() # So if the slider is set to 70, the game updates every 30 frames
+                if not ticks % frames_before_update:
+                    self.set_next_frame_states()
+                    self.update_cells()
                 # delay_time = self.settings.frame_time - self.speed_slider.getValue()
                 delay_time = self.settings.frame_time
                 pygame.time.delay(delay_time)
                 
+                
         
 if __name__ == "__main__":
-    test = GameOfLife(48)
+    test = GameOfLife(75)
     test.main()

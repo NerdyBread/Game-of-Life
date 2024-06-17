@@ -1,7 +1,7 @@
 class Settings:
     """Store all pygame settings"""
     def __init__(self, n):
-        self.screenX = 750
+        self.screenX = 1000
         self.screenY = 750
         self.caption = "Game of Life by NerdyBread"
         self.bg_color = (255, 255, 255)
@@ -15,7 +15,7 @@ class Settings:
         
         # Game settings
         self.paused = True
-        self.frame_time = 100 # milliseconds
+        self.frame_time = 1 # milliseconds
         
         # Button properties
         self.button_text_color_dark = (0, 0, 0)
@@ -25,6 +25,7 @@ class Settings:
         self.clear_button_color = (107, 24, 133)
         self.slow_button_color = (183, 183, 183)
         self.speed_button_color = (0, 255, 239)
+        self.next_button_color = (0, 0, 255)
         
     def is_paused(self):
         return self.paused
