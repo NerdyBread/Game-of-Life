@@ -65,6 +65,8 @@ class GameOfLife:
         self.next_button = Button(self, "Next", next_button_color, button_text_color_light, button_width,
                                   button_height, button_font_size, button_x, button_y)
         
+        self.toolbar_widgets.append(self.next_button)
+        
         # Speed slider
         slider_width = 100
         slider_height = 15
